@@ -1,60 +1,125 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-app>
+        <v-main>
+            <v-theme-provider root :dark="isDark">
+                <v-container>
+                    <v-row justify="center" class="ma-5">
+                        <v-col xs="12" sm="8">
+                            <v-card>
+                                <v-toolbar color="blue darken-4" dark>
+                                    <v-toolbar-side-icon></v-toolbar-side-icon>
+                                    <v-toolbar-title class="headline">Todo App</v-toolbar-title>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+                                    <v-spacer></v-spacer>
 
-      <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
+                                    <v-btn icon>
+                                        <v-icon>mdi-magnify</v-icon>
+                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn icon @click="isDark = !isDark" v-on="on">
+                                                <v-icon v-model="isDark">{{ !isDark ? 'mdi-weather-night' : 'mdi-weather-cloudy' }}</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>
+                                            {{ isDark ? 'light mode' : 'dark mode' }}
+                                        </span>
+                                    </v-tooltip>
+                                </v-toolbar>
 
-    <v-main>
-      <HelloWorld/>
-    </v-main>
-  </v-app>
+                                <v-list two-line subheader>
+                                    <v-subheader class="headline">Create TODO Task</v-subheader>
+                                    <p class="mx-12 text-right"><b>{{todos.length}}</b> Tasks</p>
+
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>
+
+                                                <v-text-field v-model="newTodo" id="newTodo" name="newTodo" label="Type your task" @keyup.enter="addTodo" />
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+
+                                </v-list>
+
+                                <v-list subheader two-line flat>
+                                    <v-subheader class="subheading" v-if="todos.length == 0">You have 0 Tasks, add some</v-subheader>
+                                    <v-subheader class="subheading" v-else>Your Tasks</v-subheader>
+
+                                    <v-list-item-group>
+                                        <v-list-item v-for="(todo, i) in todos" :key=todo.Id>
+                                            <template #default="{ active, toggle }">
+                                                <v-list-item-action>
+
+                                                    <v-checkbox v-model="todo.active" @click="toggle"></v-checkbox>
+                                                </v-list-item-action>
+
+                                                <v-list-item-content>
+                                                    <v-list-item-title :class="{
+                  done: active
+                  }">{{ todo.title | capitalize }}</v-list-item-title>
+                                                    <v-list-item-subtitle>Added on: {{ date }}{{ ord }} {{ day }} {{ year }}</v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-btn fab ripple small color="red" v-if="active" @click="removeTodo(i)">
+                                                    <v-icon class="white--text">mdi-close</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-theme-provider>
+        </v-main>
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+    //import HelloWorld from './components/HelloWorld';
 
-export default {
-  name: 'App',
+    export default {
+        name: 'App',
 
-  components: {
-    HelloWorld,
-  },
+        components: {
+            //HelloWorld,
+        },
 
-  data: () => ({
-    //
-  }),
-};
+        data() {
+            return {
+                isDark: true,
+                show: true,
+                newTodo: "",
+                todos: [],
+            }
+        },
+        methods: {
+            addTodo() {
+                const value = this.newTodo && this.newTodo.trim();
+                if (!value) {
+                    return;
+                }
+
+                this.todos.push({
+                    title: this.newTodo,
+                    done: false
+                });
+                this.newTodo = "";
+            },
+
+            removeTodo(index) {
+                this.todos.splice(index, 1);
+            },
+        },
+
+        filters: {
+            capitalize: function (value) {
+                if (!value) return "";
+                value = value.toString();
+                return value.charAt(0).toUpperCase() + value.slice(1);
+            }
+        }
+    };
 </script>
