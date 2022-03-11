@@ -1,1 +1,2 @@
-# akousist_2022h1_f
+# about todolist project
+- use `npm run serve` to start dev server
