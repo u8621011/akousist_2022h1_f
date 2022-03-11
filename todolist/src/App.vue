@@ -7,6 +7,10 @@
 
             <v-spacer></v-spacer>
 
+            <v-btn href="/"
+                   text>
+                <v-icon>mdi-archive-plus</v-icon>
+            </v-btn>
             <v-btn href="/tasks"
                    text>
                 <v-icon>mdi-format-list-bulleted-square</v-icon>
