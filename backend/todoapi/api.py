@@ -56,15 +56,21 @@ def fetch_tasks():
 def task(id):
     if request.method == 'GET':
         task = TodoTask.query.get(id)
-        return jsonify(task.to_dict())
+        return jsonify({
+            "success": True,
+            "data": task.to_dict()
+            }), 201
     elif request.method == 'PUT':   # update code here
         data = request.get_json()
         
-        task = TodoTask.query.get(data['id'])
+        task = TodoTask.query.get(id)
+
+        task_desc = data['desc']
+        task.desc = task_desc
 
         db.session.commit()
         
         return jsonify({
-            "success": true,
-            "data": survey.to_dict()
+            "success": True,
+            "data": task.to_dict()
             }), 201

@@ -28,6 +28,13 @@ const router = new VueRouter({
             path: '/tasks',
             component: ListTask,
         },
+        {
+            path: '/tasks/:taskId',
+            component: CreateTask,
+            props: route => ({
+                taskId: route.params.taskId,
+            })
+        }
     ]
 });
 
