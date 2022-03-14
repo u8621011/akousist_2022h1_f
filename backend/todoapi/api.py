@@ -7,11 +7,17 @@ api.py
 from functools import wraps
 from datetime import datetime, timedelta
 
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request, current_app, abort
 
 from .models import db, TodoTask
 
+
 api = Blueprint('api', __name__)
+
+
+@api.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
 
 
 @api.route('/hello/<string:name>/')
@@ -20,39 +26,36 @@ def say_hello(name):
     return jsonify(response)
 
 
-#@api.route('/surveys/', methods=('POST',))
-#@token_required
-#def create_survey(current_user):
-#    data = request.get_json()
-#    survey = Survey(name=data['name'])
-#    questions = []
-#    for q in data['questions']:
-#        question = Question(text=q['question'])
-#        question.choices = [Choice(text=c) for c in q['choices']]
-#        questions.append(question)
-#    survey.questions = questions
-#    survey.creator = current_user
-#    db.session.add(survey)
-#    db.session.commit()
-#    return jsonify(survey.to_dict()), 201
+@api.route('/task/', methods=('POST',))
+def create_survey():
+    data = request.get_json()
+
+    if data is not None and "title" in data:
+        new_task = TodoTask(title=data['title'])
+
+        db.session.add(new_task )
+        db.session.commit()
+        return jsonify(new_task.to_dict()), 201
+    else:
+        abort(404, description="Title not specified")
 
 
-#@api.route('/surveys/', methods=('GET',))
-#def fetch_surveys():
-#    surveys = Survey.query.all()
-#    return jsonify([s.to_dict() for s in surveys])
+@api.route('/tasks/', methods=('GET',))
+def fetch_tasks():
+    tasks = TodoTask.query.all()
+    return jsonify([t.to_dict() for t in tasks])
 
 
-#@api.route('/surveys/<int:id>/', methods=('GET', 'PUT'))
-#def survey(id):
-#    if request.method == 'GET':
-#        survey = Survey.query.get(id)
-#        return jsonify(survey.to_dict())
-#    elif request.method == 'PUT':
-#        data = request.get_json()
-#        for q in data['questions']:
-#            choice = Choice.query.get(q['choice'])
-#            choice.selected = choice.selected + 1
-#        db.session.commit()
-#        survey = Survey.query.get(data['id'])
-#        return jsonify(survey.to_dict()), 201
+@api.route('/tasks/<int:id>/', methods=('GET', 'PUT'))
+def task(id):
+    if request.method == 'GET':
+        task = TodoTask.query.get(id)
+        return jsonify(task.to_dict())
+    elif request.method == 'PUT':   # update code here
+        data = request.get_json()
+        
+        task = TodoTask.query.get(data['id'])
+
+        db.session.commit()
+        
+        return jsonify(survey.to_dict()), 201

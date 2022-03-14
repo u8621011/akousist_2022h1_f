@@ -11,12 +11,11 @@ db = SQLAlchemy()
 class TodoTask(db.Model):
     __tablename__ = 'todo_task'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
     desc = db.Column(db.String(500), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return dict(id=self.id,
-                    text=self.text,
-                    created_at=self.created_at.strftime('%Y-%m-%d %H:%M:%S'))
+                    title=self.title,
+                    desc=self.desc)

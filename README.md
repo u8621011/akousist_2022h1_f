@@ -7,5 +7,11 @@
 ```
 set FLASK_APP=appserver.py
 flask db init
+
+# init migration
+flask db migrate -m "Initial migration."
+
+# apply the migration
+flask db upgrade
 ```
 - use `python appserver.py` to start the flask restful service
