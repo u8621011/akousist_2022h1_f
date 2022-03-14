@@ -5,6 +5,9 @@ node_modules
 
 **/migrations/*
 **/__pycache__/*
+**/upload/*.jpg
+**/upload/*.png
+**/upload/*.bmp
 
 # local env files
 .env.local
