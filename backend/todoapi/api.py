@@ -52,7 +52,7 @@ def fetch_tasks():
         })
 
 
-@api.route('/tasks/<int:id>', methods=('GET', 'PUT'))
+@api.route('/tasks/<int:id>', methods=('GET', 'PUT', 'DELETE'))
 def task(id):
     if request.method == 'GET':
         task = TodoTask.query.get(id)
@@ -73,4 +73,12 @@ def task(id):
         return jsonify({
             "success": True,
             "data": task.to_dict()
+            }), 201
+    elif request.method == 'DELETE':
+        TodoTask.query.filter(TodoTask.id == id).delete()
+
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
             }), 201

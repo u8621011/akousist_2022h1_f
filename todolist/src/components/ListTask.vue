@@ -9,24 +9,20 @@
                     </v-toolbar>
 
                     <v-list subheader two-line flat>
-                        <v-subheader class="subheading" v-if="todos.length == 0">You have 0 Tasks, add some</v-subheader>
+                        <v-subheader class="subheading" v-if="tasks.length == 0">You have 0 Tasks, add some</v-subheader>
                         <v-subheader class="subheading" v-else>Your Tasks</v-subheader>
 
                         <v-list-item-group>
-                            <v-list-item v-for="(todo, i) in todos" :key=todo.Id>
-                                <template #default="{ active, toggle }">
-                                    <v-list-item-action>
-
-                                        <v-checkbox v-model="todo.active" @click="toggle"></v-checkbox>
-                                    </v-list-item-action>
-
+                            <v-list-item v-for="(t, i) in tasks" :key=t.id>
+                                <template #default="{ active}">
                                     <v-list-item-content>
-                                        <v-list-item-title :class="{
-                  done: active
-                  }">{{ todo.title }}</v-list-item-title>
-                                        <v-list-item-subtitle>Added on: {{ date }}{{ ord }} {{ day }} {{ year }}</v-list-item-subtitle>
+                                        <v-list-item-title :class="{ done: active }">{{ t.title }}</v-list-item-title>
+                                        <v-list-item-subtitle>{{fmtItemState(t)}}</v-list-item-subtitle>
                                     </v-list-item-content>
-                                    <v-btn fab ripple small color="red" v-if="active" @click="removeTodo(i)">
+                                    <v-btn fab ripple small color="green" class="mr-3" @click="openTask(t)">
+                                        <v-icon class="white--text">mdi-eye</v-icon>
+                                    </v-btn>
+                                    <v-btn fab ripple small color="red" @click="removeTask(t, i)">
                                         <v-icon class="white--text">mdi-close</v-icon>
                                     </v-btn>
                                 </template>
@@ -44,9 +40,7 @@
         name: 'ListTask',
 
         data: () => ({
-            isCreating: true,
-            newTodo: "",
-            todos: [
+            tasks: [
                 {
                     id: 1,
                     active: false,
@@ -67,22 +61,73 @@
         }),
 
         methods: {
-            addTodo() {
-                const value = this.newTodo && this.newTodo.trim();
-                if (!value) {
-                    return;
+            fmtItemState: function (task) {
+                let stateText = 'State: ';
+
+                if (task.desc) {
+                    return stateText  + 'Finished';
                 }
 
-                this.todos.push({
-                    title: this.newTodo,
-                    done: false
-                });
-                this.newTodo = "";
+                return stateText + 'Step2';
             },
+            getTasks: async function () {
+                try {
+                    let res = await this.axios.get("/api/tasks");
+                    let data = res.data;
 
-            removeTodo(index) {
-                this.todos.splice(index, 1);
+                    if (data.success) {
+                        this.tasks = data.data;
+                    } else {
+                        alert(data.error);
+                    }
+                } catch (error) {
+                    if (error.response) {
+                        // 當狀態碼不在 validateStatus 設定的範圍時進入, 401 感覺會跑來這。待確認
+                        // 有 data / status / headers 參數可用
+                        console.log(error.response.status + error.response.error);
+                    } else if (error.request) {
+                        // 發送請求，但沒有接到回應
+                        // error.request is an instance of XMLHttpRequest in the browser
+                        // and an instance of http.ClientRequest in node.js
+                        console.log(error.request);
+                    } else {
+                        // 在設定 request 時出錯會進入此
+                        console.log("Error", error.error);
+                    }
+                }
             },
+            removeTask: async function (task, taskIndex) {
+                try {
+                    let res = await this.axios.delete("/api/tasks/" + task.id);
+                    let data = res.data;
+
+                    if (data.success) {
+                        this.tasks.splice(taskIndex, 1);
+                    } else {
+                        alert(data.error);
+                    }
+                } catch (error) {
+                    if (error.response) {
+                        // 當狀態碼不在 validateStatus 設定的範圍時進入, 401 感覺會跑來這。待確認
+                        // 有 data / status / headers 參數可用
+                        console.log(error.response.status + error.response.error);
+                    } else if (error.request) {
+                        // 發送請求，但沒有接到回應
+                        // error.request is an instance of XMLHttpRequest in the browser
+                        // and an instance of http.ClientRequest in node.js
+                        console.log(error.request);
+                    } else {
+                        // 在設定 request 時出錯會進入此
+                        console.log("Error", error.error);
+                    }
+                }
+            },
+            openTask: async function (task) {
+                this.$router.push('/tasks/' + task.id);
+            }
+        },
+        mounted: async function () {
+            await this.getTasks();
         },
     }
 </script>
