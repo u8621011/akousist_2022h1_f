@@ -20,7 +20,17 @@
                         </v-list-item>
 
                         <v-list-item v-if="showDescField">
-                            <v-text-field v-model="taskDesc" id="todoDesc" name="desc" label="Task Desc"
+                            <v-file-input @change="previewImage"
+                                          v-model="pictureImage">
+                            </v-file-input>
+
+                        </v-list-item>
+                        <v-list-item v-if="pictureUrl">
+                            <v-img :src="pictureUrl"></v-img>
+                        </v-list-item>
+
+                        <v-list-item v-if="showDescField">
+                            <v-text-field v-model="taskDesc" id="tasjDesc" name="tasjDesc" label="Task Desc"
                                           :disabled="taskObject && taskObject.desc && taskObject.desc.length > 0"
                                           @keyup.enter="updateTaskDesc" />
                         </v-list-item>
@@ -53,10 +63,16 @@
             // input field data
             taskTitle: "",
             taskDesc: null,
+            pictureUrl: null,
+            pictureImage: null,
+
             taskObject: null,
             todos: [],
         }),
         methods: {
+            previewImage() {
+                this.pictureUrl = URL.createObjectURL(this.pictureImage)
+            },
             onBtnClicked: function () {
                 if (this.taskObject) {
                     this.updateTask();
@@ -70,7 +86,7 @@
                     return;
                 }
                 try {
-                    let res = await this.axios.post("api/tasks", {
+                    let res = await this.axios.post("/api/tasks", {
                         title: value,
                     });
                     console.log('res: ' + JSON.stringify(res));
@@ -98,15 +114,28 @@
                     }
                 }
             },
+            getFormData: function () {
+                const formData = new FormData();
+
+                if (this.pictureImage) {
+                    formData.append("file", this.pictureImage);
+                }
+
+                if (this.taskDesc) {
+                    formData.append('desc', this.taskDesc);
+                }
+
+                return formData;
+            },
             updateTask: async function () {
                 const value = this.taskDesc && this.taskDesc.trim();
                 if (!value) {
                     return;
                 }
+
                 try {
-                    let res = await this.axios.put("/api/tasks/" + this.taskId, {
-                        desc: this.taskDesc,
-                    });
+                    let formData = this.getFormData();
+                    let res = await this.axios.put("/api/tasks/" + this.taskId, formData);
                     console.log('res: ' + JSON.stringify(res));
                     let data = res.data;
                     if (data.success) {
@@ -168,7 +197,7 @@
         },
         computed: {
             isCreating: function () {
-                if (!this.taskObject || !this.taskObject.desc) {
+                if (!this.taskObject || !this.taskObject.filename || !this.taskObject.desc) {
                     return true;
                 }
                 return false;
@@ -190,6 +219,11 @@
                 if (!this.taskObject) {
                     return 'Create Task';
                 }
+
+                if (!this.taskObject.filename) {
+                    return 'Upload Image';
+                }
+
                 if (!this.taskObject.desc) {
                     return 'Update Desc';
                 }

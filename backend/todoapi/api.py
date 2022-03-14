@@ -8,9 +8,10 @@ from functools import wraps
 from datetime import datetime, timedelta
 
 from flask import Blueprint, jsonify, request, current_app, abort
-
+from werkzeug.utils import secure_filename
 from .models import db, TodoTask
-
+import uuid
+import os
 
 api = Blueprint('api', __name__)
 
@@ -33,7 +34,7 @@ def create_survey():
     if data is not None and "title" in data:
         new_task = TodoTask(title=data['title'])
 
-        db.session.add(new_task )
+        db.session.add(new_task)
         db.session.commit()
         return jsonify({
             "success": True,
@@ -61,12 +62,31 @@ def task(id):
             "data": task.to_dict()
             }), 201
     elif request.method == 'PUT':   # update code here
-        data = request.get_json()
-        
         task = TodoTask.query.get(id)
 
-        task_desc = data['desc']
-        task.desc = task_desc
+        if task.filename is None:
+            # upload image
+            file = request.files['file']
+            filename = secure_filename(file.filename)
+
+            # Gen GUUID File Name
+            fileExt = filename.split('.')[1]
+            autoGenFileName = uuid.uuid4()
+
+            newFileName = str(autoGenFileName) + '.' + fileExt
+
+            print('filename: ' + newFileName)
+
+            file.save(os.path.join(os.path.dirname(__file__), "../upload", newFileName))
+
+            task.origin_filename = filename
+            task.filename = newFileName
+        elif task.desc is None:
+            # update desc
+            #data = request.get_json()
+            data = request.form
+            task_desc = data['desc']
+            task.desc = task_desc
 
         db.session.commit()
         
