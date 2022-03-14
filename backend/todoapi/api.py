@@ -26,7 +26,7 @@ def say_hello(name):
     return jsonify(response)
 
 
-@api.route('/task/', methods=('POST',))
+@api.route('/tasks/', methods=('POST',))
 def create_survey():
     data = request.get_json()
 
