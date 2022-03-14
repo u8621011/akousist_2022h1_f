@@ -26,7 +26,7 @@ def say_hello(name):
     return jsonify(response)
 
 
-@api.route('/tasks/', methods=('POST',))
+@api.route('/tasks', methods=('POST',))
 def create_survey():
     data = request.get_json()
 
@@ -35,18 +35,24 @@ def create_survey():
 
         db.session.add(new_task )
         db.session.commit()
-        return jsonify(new_task.to_dict()), 201
+        return jsonify({
+            "success": True,
+            "data": new_task.to_dict()
+            }), 201
     else:
         abort(404, description="Title not specified")
 
 
-@api.route('/tasks/', methods=('GET',))
+@api.route('/tasks', methods=('GET',))
 def fetch_tasks():
     tasks = TodoTask.query.all()
-    return jsonify([t.to_dict() for t in tasks])
+    return jsonify({
+        "success": True,
+        "data": [t.to_dict() for t in tasks]
+        })
 
 
-@api.route('/tasks/<int:id>/', methods=('GET', 'PUT'))
+@api.route('/tasks/<int:id>', methods=('GET', 'PUT'))
 def task(id):
     if request.method == 'GET':
         task = TodoTask.query.get(id)
@@ -58,4 +64,7 @@ def task(id):
 
         db.session.commit()
         
-        return jsonify(survey.to_dict()), 201
+        return jsonify({
+            "success": true,
+            "data": survey.to_dict()
+            }), 201

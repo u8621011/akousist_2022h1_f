@@ -8,4 +8,4 @@ app = create_app()
 
 migrate = Migrate(app, db)
 
-app.run(host='0.0.0.0')
+app.run()

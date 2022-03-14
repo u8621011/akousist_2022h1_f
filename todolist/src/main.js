@@ -4,6 +4,12 @@ import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
+//Vue.axios.defaults.baseURL = 'http://127.0.0.1:5000/api';
+
 import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);

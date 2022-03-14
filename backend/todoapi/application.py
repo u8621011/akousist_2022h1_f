@@ -15,6 +15,9 @@ def create_app(app_name='TODO_API'):
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
   from todoapi.api import api
+
+  CORS(api)
+
   app.register_blueprint(api, url_prefix="/api")
 
   from todoapi.models import db

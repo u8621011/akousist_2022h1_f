@@ -17,7 +17,7 @@
             </v-btn>
         </v-app-bar>
         <v-main>
-            <router-view :user="user"></router-view>
+            <router-view></router-view>
         </v-main>
     </v-app>
 </template>
