@@ -32,7 +32,7 @@ pip install -r requirements.txt
 ```
 
 ## commands to init/migration/upgrade db
-You can also create your own database file using commands below.
+You don't have to do these opeerations but if you want, you can also delete the tasks.db file and create your own using commands below.
 ```
 # setup environment before executing flask-migrate db commands
 set FLASK_APP=appserver.py
