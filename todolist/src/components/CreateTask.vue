@@ -14,13 +14,13 @@
                                 <v-list-item-title>
                                     <v-text-field v-model="taskTitle" id="taskTitle" name="taskTitle" label="Task Title"
                                                   :disabled="taskObject && taskObject.title && taskObject.title.length > 0"
-                                                  @keyup.enter="addTodo" />
+                                                  @keyup.enter="onBtnClicked()" />
                                 </v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
 
                         <v-list-item v-if="inStep == 2">
-                            <v-file-input @change="previewImage" accept="image/*"
+                            <v-file-input @change="previewImage" accept="image/jpeg, image/png, image/gif, image/bmp"
                                           v-model="pictureImage">
                             </v-file-input>
                         </v-list-item>
@@ -34,7 +34,7 @@
                         <v-list-item v-if="inStep >= 3">
                             <v-text-field v-model="taskDesc" id="tasjDesc" name="tasjDesc" label="Task Desc"
                                           :disabled="taskObject && taskObject.desc && taskObject.desc.length > 0"
-                                          @keyup.enter="updateTaskDesc" />
+                                          @keyup.enter="onBtnClicked()" />
                         </v-list-item>
 
                         <v-list-item v-if="inStep < 4">
@@ -73,7 +73,13 @@
         }),
         methods: {
             previewImage() {
-                this.pictureUrl = URL.createObjectURL(this.pictureImage)
+                const fileType = this.pictureImage['type'];
+                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/bmp'];
+                if (validImageTypes.includes(fileType)) {
+                    this.pictureUrl = URL.createObjectURL(this.pictureImage)
+                } else {
+                    alert('Invalid file type, please select gir/jpeg/png/bmp file');
+                }
             },
             onBtnClicked: function () {
                 if (this.taskObject) {
@@ -135,6 +141,14 @@
                 if (this.inStep == 2) {
                     if (!this.pictureImage) {
                         alert('Please select image file');
+                        return;
+                    }
+
+                    // check is image file or not
+                    const fileType = this.pictureImage['type'];
+                    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/bmp'];
+                    if (!validImageTypes.includes(fileType)) {
+                        alert('Invalid file type, please select gir/jpeg/png/bmp file');
                         return;
                     }
                 } else if (this.inStep == 3) {
