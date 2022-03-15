@@ -54,4 +54,7 @@ flask db upgrade
 ## app entrypoint
 - open url `http://localhost:8080/` in any browser
 
-
+## app screenshot
+![screenshot](/screenshot.png)
+1. create task
+2. list task
