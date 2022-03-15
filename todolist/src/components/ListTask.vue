@@ -13,7 +13,7 @@
                         <v-subheader class="subheading" v-else>Your Tasks</v-subheader>
 
                         <v-list-item-group>
-                            <v-list-item v-for="(t, i) in tasks" :key=t.id v-on:click="openTask(t)">
+                            <v-list-item v-for="(t, i) in tasks" :key=t.id>
                                 <template #default="{ active}">
                                     <v-list-item-content>
                                         <v-list-item-title :class="{ done: active }">{{ t.title }}</v-list-item-title>
