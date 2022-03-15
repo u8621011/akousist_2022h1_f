@@ -1,5 +1,6 @@
 # file structures
 - file/folder description
+```
 backend: backend project root
     |---- tasks.db: the sqlite db file
     |---- upload: the folder of uploaded images
@@ -7,6 +8,7 @@ backend: backend project root
     |---- todoapi: the folder of backend api source codes
 todolist: frontend project root
     |---- src: the folder of frontend source codes
+```
 
 # Backend project
 
