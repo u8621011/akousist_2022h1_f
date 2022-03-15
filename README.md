@@ -55,6 +55,6 @@ flask db upgrade
 - open url `http://localhost:8080/` in any browser
 
 ## app screenshot
-![screenshot](/screenshot.png)
+![screenshot](/screenshot.png?)
 1. create task
 2. list task
