@@ -13,14 +13,14 @@
                         <v-subheader class="subheading" v-else>Your Tasks</v-subheader>
 
                         <v-list-item-group>
-                            <v-list-item v-for="(t, i) in tasks" :key=t.id>
+                            <v-list-item v-for="(t, i) in tasks" :key=t.id v-on:click="openTask(t)">
                                 <template #default="{ active}">
                                     <v-list-item-content>
                                         <v-list-item-title :class="{ done: active }">{{ t.title }}</v-list-item-title>
                                         <v-list-item-subtitle>{{fmtItemState(t)}}</v-list-item-subtitle>
                                     </v-list-item-content>
-                                    <v-btn fab ripple small color="green" class="mr-3" @click="openTask(t)">
-                                        <v-icon class="white--text">mdi-eye</v-icon>
+                                    <v-btn fab ripple small :color="inStep(t)==4?'green':'blue'" class="mr-3" @click="openTask(t)">
+                                        <v-icon class="white--text">{{itemIcon(t)}}</v-icon>
                                     </v-btn>
                                     <v-btn fab ripple small color="red" @click="removeTask(t, i)">
                                         <v-icon class="white--text">mdi-close</v-icon>
@@ -61,14 +61,45 @@
         }),
 
         methods: {
-            fmtItemState: function (task) {
-                let stateText = 'State: ';
-
-                if (task.desc) {
-                    return stateText  + 'Finished';
+            inStep: function (task) {
+                if (!task.filename) {
+                    return 2;
                 }
 
-                return stateText + 'Step2';
+                if (!task.desc) {
+                    return 3;
+                }
+
+                return 4;
+            },
+            itemIcon: function (task) {
+                let stepState = this.inStep(task);
+
+                switch (stepState) {
+                    case 1:
+                    case 2:
+                    case 3:
+                        return 'mdi-application-edit-outline';
+
+                    default:
+                        return 'mdi-eye';
+                }
+            },
+            fmtItemState: function (task) {
+                let stateText = 'State: ';
+                let stepState = this.inStep(task);
+
+                switch (stepState) {
+                    case 1:
+                    case 2:
+                    case 3:
+                        return stateText + 'Step' + stepState;
+                    case 4:
+                        return stateText + 'Finished';
+
+                    default:
+                        return stateText + 'Unknown';
+                }
             },
             getTasks: async function () {
                 try {
