@@ -19,12 +19,27 @@
                                         <v-list-item-title :class="{ done: active }">{{ t.title }}</v-list-item-title>
                                         <v-list-item-subtitle>{{fmtItemState(t)}}</v-list-item-subtitle>
                                     </v-list-item-content>
-                                    <v-btn fab ripple small :color="inStep(t)==4?'green':'blue'" class="mr-3" @click="openTask(t)">
-                                        <v-icon class="white--text">{{itemIcon(t)}}</v-icon>
-                                    </v-btn>
-                                    <v-btn fab ripple small color="red" @click="removeTask(t, i)">
-                                        <v-icon class="white--text">mdi-close</v-icon>
-                                    </v-btn>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn fab ripple small :color="inStep(t)==4?'green':'blue'"
+                                                   v-bind="attrs" v-on="on"
+                                                   class="mr-3" @click="openTask(t)">
+                                                <v-icon class="white--text">{{itemIcon(t)}}</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Edit or view task item</span>
+                                    </v-tooltip>
+
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn fab ripple small color="red" @click="removeTask(t, i)"
+                                                   v-bind="attrs" v-on="on">
+                                                <v-icon class="white--text">mdi-close</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Delete task</span>
+                                    </v-tooltip>
+                                    
                                 </template>
                             </v-list-item>
                         </v-list-item-group>
