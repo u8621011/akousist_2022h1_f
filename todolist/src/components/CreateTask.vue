@@ -151,10 +151,10 @@
                     console.log('res: ' + JSON.stringify(res));
                     let data = res.data;
                     if (data.success) {
-
+                        let item = data.data;
                         if (this.inStep == 2) {
-                            this.$set(this.taskObject, 'filename', data.filename);
-                            this.$set(this.taskObject, 'origin_filename', data.origin_filename);
+                            this.$set(this.taskObject, 'filename', item.filename);
+                            this.$set(this.taskObject, 'origin_filename', item.origin_filename);
                         } else if (this.inStep == 3) {
                             this.$set(this.taskObject, 'desc', this.taskDesc);
                         }
