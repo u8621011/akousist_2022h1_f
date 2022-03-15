@@ -9,7 +9,7 @@
 
                     <v-list two-line subheader>
                         <v-subheader class="headline" v-if="inStep < 4">{{stepTitle}}</v-subheader>
-                        <v-list-item v-if="nStep < 4">
+                        <v-list-item v-if="inStep < 4">
                             <v-list-item-content>
                                 <p style="color:red">{{stepHintText}}</p>
                             </v-list-item-content>
