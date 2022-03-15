@@ -9,7 +9,9 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 def create_app(app_name='TODO_API'):
-  app = Flask(app_name)
+  app = Flask(app_name,
+              static_url_path='/upload',
+              static_folder = 'upload')
   app.config.from_object('todoapi.config.BaseConfig')
 
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})

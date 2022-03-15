@@ -64,7 +64,7 @@ def task(id):
     elif request.method == 'PUT':   # update code here
         task = TodoTask.query.get(id)
 
-        if task.filename is None:
+        if task.filename is None and 'file' in request.files:
             # upload image
             file = request.files['file']
             filename = secure_filename(file.filename)
@@ -81,7 +81,8 @@ def task(id):
 
             task.origin_filename = filename
             task.filename = newFileName
-        elif task.desc is None:
+        
+        if task.desc is None and 'desc' in request.form:
             # update desc
             #data = request.get_json()
             data = request.form
