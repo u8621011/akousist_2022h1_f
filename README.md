@@ -51,7 +51,7 @@ flask db upgrade
 - run `npm install` in todolist\ folder
 - run `npm run serve` to start dev server
 
-# app entrypoint
+## app entrypoint
 - open url `http://localhost:8080/` in any browser
 
 

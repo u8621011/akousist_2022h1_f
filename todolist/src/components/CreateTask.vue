@@ -8,7 +8,13 @@
                     </v-toolbar>
 
                     <v-list two-line subheader>
-                        <v-subheader class="headline" v-if="inStep < 4">{{stepHintText}}</v-subheader>
+                        <v-subheader class="headline" v-if="inStep < 4">{{stepTitle}}</v-subheader>
+                        <v-list-item v-if="inStep >= 1">
+                            <v-list-item-content>
+                                <p style="color:red">{{stepHintText}}</p>
+                            </v-list-item-content>
+                        </v-list-item>
+
                         <v-list-item v-if="inStep >= 1">
                             <v-list-item-content>
                                 <v-list-item-title>
@@ -260,14 +266,29 @@
                 }
                 
             },
+            stepTitle: function () {
+                switch (this.inStep) {
+                    case 1:
+                        return 'Step1';
+                    case 2:
+                        return 'Step2';
+                    case 3:
+                        return 'Step3';
+                    case 4:
+                        return 'Finished';
+
+                    default:
+                        return 'Unknown Step';
+                }
+            },
             stepHintText: function () {
                 switch (this.inStep) {
                     case 1:
-                        return 'Step1. Input the task title and click create to start';
+                        return 'Input the task title and click create to start';
                     case 2:
-                        return 'Step2. Select image file and click update desc to finish.';
+                        return 'Select image file and click update desc to finish.';
                     case 3:
-                        return 'Step3. Input task desc and click update desc to finish.';
+                        return 'Input task desc and click update desc to finish.';
                     default:
                         return 'Unknown hint';
                 }
