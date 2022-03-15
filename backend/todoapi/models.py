@@ -1,6 +1,6 @@
 """
 models.py
-- Data classes for the surveyapi application
+- Data classes for the todoapi application
 """
 
 from datetime import datetime

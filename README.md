@@ -1,10 +1,11 @@
-# about todolist project
+# Todolist project
 - use `npm run serve` to start dev server
 
 
-# about backend project
-- command to init db
+# Backend project
+- commands to init/migration/upgrade db
 ```
+# setup environment before executing flask-migrate db commands
 set FLASK_APP=appserver.py
 flask db init
 
